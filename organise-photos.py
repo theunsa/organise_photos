@@ -1,7 +1,9 @@
+#!/usr/bin/env python
 import os
 import sys
 import time
 import logging
+import hashlib
 from datetime import datetime
 from PIL import Image
 
@@ -98,6 +100,14 @@ if __name__ == "__main__":
         new_photo_name = "{}{}{}_{}{}{}{}".format(
             year, month, day, hour, minute, second, ext)
         new_photo_filename = os.path.join(year, month, new_photo_name)
+        # If the new filename already exists (multiple photos in 1 sec) then
+        # add a hash to the end
+        if os.path.isfile(new_photo_filename):
+            md5 = '_' + hashlib.md5(photo_filename).hexdigest()[0:4]
+            new_photo_name = "{}{}{}_{}{}{}{}{}".format(
+                year, month, day, hour, minute, second, md5, ext)
+            new_photo_filename = os.path.join(year, month, new_photo_name)
+        # Create the dirs and move the file
         create_year_dir(year)
         create_month_dir(year, month)
         logger.info("Moving '{}' -> '{}'"
