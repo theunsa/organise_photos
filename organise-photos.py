@@ -38,23 +38,7 @@ def create_month_dir(year, month):
         logger.info("Created month dir '%s'", month_dir)
 
 
-if __name__ == "__main__":
-
-    # TODO: Use argparser
-    use_file_creation_time = False
-
-    if len(sys.argv) != 2:
-        print "Error! Please specify directory to process."
-        sys.exit(1)
-
-    photo_dir = sys.argv[1]
-    if not os.path.isdir(photo_dir):
-        print "Error! '{}' is not a directory.".format(photo_dir)
-        sys.exit(2)
-
-    print "---- Start ----"
-    setup_logger()
-
+def process_photo_dir(photo_dir):
     os.chdir(photo_dir)
     files = os.listdir('.')
     photos = [f.lower() for f in files
@@ -114,5 +98,26 @@ if __name__ == "__main__":
                     .format(photo_filename, new_photo_filename))
         os.rename(photo_filename, new_photo_filename)
 
+
+if __name__ == "__main__":
+
+    # TODO: Use argparser
+    use_file_creation_time = False
+
+    if len(sys.argv) != 2:
+        print "Error! Please specify directory to process."
+        sys.exit(1)
+
+    photo_dirs = sys.argv[1:]
+    for photo_dir in photo_dirs:
+        if not os.path.isdir(photo_dir):
+            print "Error! '{}' is not a directory.".format(photo_dir)
+            sys.exit(2)
+
+    print "---- Start ----"
+    setup_logger()
+
+    for photo_dir in photo_dirs:
+        process_photo_dir(photo_dir)
 
     print "---- End ----"
